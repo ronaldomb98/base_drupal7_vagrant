@@ -6,15 +6,15 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/xenial32"
+  config.vm.box = "ubuntu/xenial64"
   config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.box_check_update = false
-  config.vm.synced_folder "drupal7/", "/home/vagrant/www/", owner: "www-data", group: "www-data"
+  config.vm.synced_folder "www/", "/home/vagrant/www/", owner: "www-data", group: "www-data", mount_options: ["dmode=775,fmode=777"]
   # config.vm.synced_folder "/home/ronaldomb/workspace/sprint10/front/dist", "/home/vagrant/www/"
   
   config.vm.provider "virtualbox" do |vb|
     vb.gui = false
-    vb.name = "MyApache"
+    vb.name = "MyApachePhp7"
     vb.memory = "1024"
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
