@@ -2,7 +2,7 @@
 
 - hosts: all
   vars:
-    user: ubuntu
+    user: vagrant
   tasks:
     - name: Installing git  and zsh
       become: true
