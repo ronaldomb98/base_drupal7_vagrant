@@ -1,6 +1,8 @@
 ---
 
 - hosts: all
+  vars:
+    user: ubuntu
   tasks:
     - name: Installing git  and zsh
       become: true
@@ -22,23 +24,23 @@
       become: true
       git:
         repo: git://github.com/robbyrussell/oh-my-zsh
-        dest: /home/vagrant/.oh-my-zsh
+        dest: /home/{{user}}/.oh-my-zsh
     - name: Setting up template to oh my zsh
       become: true
       copy: 
-        src: /home/vagrant/.oh-my-zsh/templates/zshrc.zsh-template
-        dest: /home/vagrant/.zshrc
+        src: /home/{{user}}/.oh-my-zsh/templates/zshrc.zsh-template
+        dest: /home/{{user}}/.zshrc
     - name: Configuring default theme from Oh my zsh
       become: true
       replace:
-        path: /home/vagrant/.zshrc
+        path: /home/{{user}}/.zshrc
         regexp: 'ZSH_THEME="robbyrussell"'
         replace: 'ZSH_THEME="kardan"'
     - name: Change default bash
       become: true
       user:
         force: true
-        name: vagrant
+        name: "{{user}}"
         shell: /bin/zsh
     - name: Instaling mysql with dependencies
       become: true
@@ -116,14 +118,14 @@
       replace:
         path: /etc/apache2/sites-available/000-default.conf
         regexp: 'DocumentRoot /var/www/html'
-        replace: 'DocumentRoot /home/vagrant/www'
-    - name: Set www directory vagrant as a default root directory
+        replace: 'DocumentRoot /home/{{user}}/www'
+    - name: Set www directory user as a default root directory
       become: true
       blockinfile:
         path: /etc/apache2/sites-available/000-default.conf
-        insertafter: 'DocumentRoot /home/vagrant/www'
+        insertafter: 'DocumentRoot /home/{{user}}/www'
         content: |
-          <Directory "/home/vagrant/www">
+          <Directory "/home/{{user}}/www">
             Options Indexes FollowSymLinks
             AllowOverride all
             Require all granted
@@ -133,21 +135,6 @@
       apache2_module:
         name: rewrite
         state: present
-    - name: Create example .htaccess for angular projects
-      file:
-        path: /home/vagrant/utils/
-        state: directory
-    - name: Create example .htaccess for angular projects
-      copy:
-        dest: /home/vagrant/utils/angular.htaccess
-        content: |
-          RewriteEngine on
-          RewriteCond %{REQUEST_FILENAME} !-f
-          RewriteCond %{REQUEST_FILENAME} !-d
-
-          # not rewrite css, js and images
-          RewriteCond %{REQUEST_URI} !\.(?:css|js|map|jpe?g|gif|png)$ [NC]
-          RewriteRule ^(.*)$ /index.html?path=$1 [
     - name: Create user project one name ronaldo
       become: true
       mysql_user:
@@ -195,7 +182,7 @@
     - name: Creating a link for drush
       become: true
       file:
-        src: "/home/vagrant/.config/composer/vendor/bin/drush"
+        src: "/home/{{user}}/.config/composer/vendor/bin/drush"
         dest: "/usr/local/bin/drush"
         state: link
     - name: Reload apache2

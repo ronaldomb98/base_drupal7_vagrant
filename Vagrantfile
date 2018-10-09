@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
   config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.box_check_update = false
-  config.vm.synced_folder "www/", "/home/vagrant/www/", owner: "www-data", group: "www-data", mount_options: ["dmode=777,fmode=777"]
+  config.vm.synced_folder "www/", "/home/ubuntu/www/", owner: "www-data", group: "www-data", mount_options: ["dmode=777,fmode=777"]
   # config.vm.synced_folder "/home/ronaldomb/workspace/sprint10/front/dist", "/home/vagrant/www/"
   
   config.vm.provider "virtualbox" do |vb|
